@@ -39,7 +39,7 @@ class _usersListPageState extends State<usersListPage> {
         email: 'gen@kronos.dev',
         lat: 6,
         lon: 7,
-        image: '');
+        image: 'https://picsum.photos/100/300');
     User secondUser = User(
         name: "john",
         phone: 31,
@@ -47,7 +47,7 @@ class _usersListPageState extends State<usersListPage> {
         email: 'uk@kronos.dev',
         lat: 3,
         lon: 2,
-        image: '');
+        image: 'https://picsum.photos/100/200');
     List<User> listOfUsers = [firstUser, secondUser];
     return await handler.insertUser(listOfUsers);
   }
@@ -57,10 +57,10 @@ class _usersListPageState extends State<usersListPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: primaryColor,
+        backgroundColor: bgLightColor,
         title: const Text(
           "users We Love",
-          style: kronosH1Black,
+          style: kronosH2Black,
         ),
       ),
       body: Center(
@@ -75,10 +75,11 @@ class _usersListPageState extends State<usersListPage> {
                     return Dismissible(
                         direction: DismissDirection.endToStart,
                         background: Container(
-                          color: Colors.pink[300],
+                          color: dangerColor,
                           alignment: Alignment.centerRight,
-                          padding: EdgeInsets.symmetric(horizontal: 10.0),
-                          child: Icon(Icons.delete_forever),
+                          padding: EdgeInsets.symmetric(horizontal: 20.0),
+                          child: Icon(Icons.delete_forever,
+                              color: Colors.white, size: 42),
                         ),
                         child: userCard(
                           user: data[index],
