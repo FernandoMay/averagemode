@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       title: 'Kronos',
       theme: theme(),
       debugShowCheckedModeBanner: false,
-      home: const Register(),
+      home: const usersListPage(),
     );
   }
 }

@@ -1,8 +1,11 @@
 import 'package:averagemode/constants.dart';
+import 'package:averagemode/db.dart';
+import 'package:averagemode/user.dart';
 import 'package:averagemode/userListPage.dart';
 // import 'package:averagemode/userslistpage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:kronos/camera.dart';
 // import 'package:kronos/camera.dart';
 // import 'package:kronos/constants.dart';
@@ -17,13 +20,63 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   int segmentedControlValue = 0;
 
+  TextEditingController _nameField = TextEditingController();
+  TextEditingController _lastnameField = TextEditingController();
+  TextEditingController _phoneField = TextEditingController();
+  TextEditingController _emailField = TextEditingController();
+
+  bool emailValidator(String value) {
+    String pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regex = RegExp(pattern);
+    if (!regex.hasMatch(value)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  late DatabaseHandler handler;
+  // late Future<List<User>> futureData;
+
+  @override
+  void initState() {
+    super.initState();
+
+    ///futureData = fetchUsers();
+    handler = DatabaseHandler();
+  }
+
+  Future<int> addUser() async {
+    User user = User(
+        name: _nameField.text,
+        phone: int.parse(_phoneField.text),
+        lastname: _lastnameField.text,
+        email: _emailField.text,
+        lat: 6.3485834,
+        lon: 7.9485734,
+        image: 'https://picsum.photos/100/300');
+    return await handler.insertUser([user]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
       child: CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
           padding: EdgeInsetsDirectional.all(4.0),
-          middle: Image.asset("lib/assets/kronos_logo2.png"),
+          middle: Text("Regístro"),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const usersListPage(),
+                ),
+              );
+            },
+            icon: Icon(Icons.close),
+          ),
         ),
         child: SafeArea(
           child: Container(
@@ -36,7 +89,7 @@ class _RegisterState extends State<Register> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 80.0, vertical: 32.0),
                   child: Text(
-                    "Crear Cuenta",
+                    "Bienvenido, ingrese sus datos",
                     style: kronosH3Blue,
                     textAlign: TextAlign.center,
                   ),
@@ -54,15 +107,13 @@ class _RegisterState extends State<Register> {
                       EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
                   child: CupertinoTextField(
+                    controller: _nameField,
                     padding: EdgeInsets.all(12.0),
                     onChanged: (value) => print(value),
                     keyboardType: TextInputType.text,
-                    cursorColor: primaryColor,
-                    // prefix: Container(
-                    //     height: 20.0,
-                    //     margin: EdgeInsets.only(left: 12.0),
-                    //     child: Image.asset("lib/assets/User.png")),
-                    // placeholder: "Usuario",
+                    cursorColor: secondaryColor,
+                    maxLength: 13,
+                    maxLines: 1,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.0),
                       border: Border.all(color: greyLightColor),
@@ -85,15 +136,13 @@ class _RegisterState extends State<Register> {
                       EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
                   child: CupertinoTextField(
+                    controller: _lastnameField,
                     padding: EdgeInsets.all(12.0),
                     onChanged: (value) => print(value),
                     keyboardType: TextInputType.text,
-                    cursorColor: primaryColor,
-                    // prefix: Container(
-                    //     height: 20.0,
-                    //     margin: EdgeInsets.only(left: 12.0),
-                    //     child: Image.asset("lib/assets/Password.png")),
-                    // placeholder: "Contraseña",
+                    cursorColor: secondaryColor,
+                    maxLength: 28,
+                    maxLines: 1,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.0),
                       border: Border.all(color: greyLightColor),
@@ -107,7 +156,7 @@ class _RegisterState extends State<Register> {
                   alignment: Alignment.centerLeft,
                   padding: EdgeInsets.symmetric(horizontal: 26.0),
                   child: Text(
-                    "Correo",
+                    "Teléfono",
                     style: kronosH1Black,
                   ),
                 ),
@@ -116,15 +165,42 @@ class _RegisterState extends State<Register> {
                       EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
                   child: CupertinoTextField(
+                    controller: _phoneField,
+                    padding: EdgeInsets.all(12.0),
+                    onChanged: (value) => print(value),
+                    keyboardType: TextInputType.number,
+                    cursorColor: secondaryColor,
+                    maxLength: 10,
+                    maxLines: 1,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.0),
+                      border: Border.all(color: greyLightColor),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 18.0,
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.symmetric(horizontal: 26.0),
+                  child: Text(
+                    "Correo electrónico",
+                    style: kronosH1Black,
+                  ),
+                ),
+                Container(
+                  margin:
+                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: CupertinoTextField(
+                    controller: _emailField,
                     padding: EdgeInsets.all(12.0),
                     onChanged: (value) => print(value),
                     keyboardType: TextInputType.emailAddress,
                     cursorColor: primaryColor,
-                    // prefix: Container(
-                    //     height: 20.0,
-                    //     margin: EdgeInsets.only(left: 12.0),
-                    //     child: Image.asset("lib/assets/User.png")),
-                    // placeholder: "Usuario",
+                    maxLength: 48,
+                    maxLines: 1,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.0),
                       border: Border.all(color: greyLightColor),
@@ -138,151 +214,82 @@ class _RegisterState extends State<Register> {
                   alignment: Alignment.centerLeft,
                   padding: EdgeInsets.symmetric(horizontal: 26.0),
                   child: Text(
-                    "Contraseña",
+                    "Fotografía",
                     style: kronosH1Black,
-                  ),
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: CupertinoTextField(
-                    padding: EdgeInsets.all(12.0),
-                    onChanged: (value) => print(value),
-                    keyboardType: TextInputType.text,
-                    obscureText: true,
-                    cursorColor: primaryColor,
-                    // prefix: Container(
-                    //     height: 20.0,
-                    //     margin: EdgeInsets.only(left: 12.0),
-                    //     child: Image.asset("lib/assets/Password.png")),
-                    // placeholder: "Contraseña",
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.0),
-                      border: Border.all(color: greyLightColor),
-                    ),
                   ),
                 ),
                 SizedBox(
-                  height: 18.0,
+                  height: 8.0,
                 ),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.symmetric(horizontal: 26.0),
-                  child: Text(
-                    "Confirmar contraseña",
-                    style: kronosH1Black,
-                  ),
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: CupertinoTextField(
-                    padding: EdgeInsets.all(12.0),
-                    onChanged: (value) => print(value),
-                    keyboardType: TextInputType.text,
-                    obscureText: true,
-                    cursorColor: primaryColor,
-                    // prefix: Container(
-                    //     height: 20.0,
-                    //     margin: EdgeInsets.only(left: 12.0),
-                    //     child: Image.asset("lib/assets/User.png")),
-                    // placeholder: "Usuario",
+                CupertinoButton(
+                  child: Container(
+                    // height: 48.0,
+                    width: double.infinity,
+                    height: 142.0,
                     decoration: BoxDecoration(
+                      color: bgLightColor,
                       borderRadius: BorderRadius.circular(8.0),
-                      border: Border.all(color: greyLightColor),
                     ),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
+                    child:
+                        Icon(Icons.photo_camera, size: 48, color: Colors.white),
                   ),
-                ),
-                SizedBox(
-                  height: 18.0,
-                ),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.symmetric(horizontal: 26.0),
-                  child: Text(
-                    "Fecha de nacimiento",
-                    style: kronosH1Black,
-                  ),
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: CupertinoTextField(
-                    padding: EdgeInsets.all(12.0),
-                    onChanged: (value) => print(value),
-                    cursorColor: primaryColor,
-                    keyboardType: TextInputType.datetime,
-                    suffix: Container(
-                        height: 26.0,
-                        margin: EdgeInsets.only(right: 12.0),
-                        child: Image.asset("lib/assets/Calendar.png")),
-                    // placeholder: "Contraseña",
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.0),
-                      border: Border.all(color: greyLightColor),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 18.0,
-                ),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.symmetric(horizontal: 26.0),
-                  child: Text(
-                    "Género",
-                    style: kronosH1Black,
-                  ),
-                ),
-                Container(
-                  // height: 48.0,
-                  width: double.infinity,
-                  padding:
-                      EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
-                  child: CupertinoSlidingSegmentedControl(
-                    padding: EdgeInsets.all(6.0),
-                    groupValue: segmentedControlValue,
-                    backgroundColor: greyLightColor,
-                    onValueChanged: (value) {
-                      setState(() {
-                        // segmentedControlValue = value;
-                      });
-                    },
-                    children: {
-                      0: Padding(
-                        child: Text("Hombre", style: kronosH1Black),
-                        padding: EdgeInsets.all(12.0),
-                      ),
-                      1: Padding(
-                        child: Text("Mujer", style: kronosH1Black),
-                        padding: EdgeInsets.all(12.0),
-                      ),
-                      2: Padding(
-                        child: Text("Otro", style: kronosH1Black),
-                        padding: EdgeInsets.all(12.0),
-                      ),
-                    },
-                  ),
+                  onPressed: () {
+                    print("FOTO");
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => const Register(),
+                    //   ),
+                    // );
+                  },
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 24.0, vertical: 16.0),
+                      horizontal: 24.0, vertical: 12.0),
                   child: Container(
                     width: double.infinity,
                     child: CupertinoButton(
                       color: secondaryColor,
                       // padding: EdgeInsets.symmetric(horizontal: size.width * 0.25),
-                      child: Text("Crear cuenta"),
+                      child: Text("Guardar datos"),
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const usersListPage(),
-                          ),
-                        );
+                        if (_nameField.text.isEmpty ||
+                            _lastnameField.text.isEmpty ||
+                            _phoneField.text.isEmpty ||
+                            _emailField.text.isEmpty) {
+                          Fluttertoast.showToast(
+                              msg: "Llena todos los campos",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: greyLightColor,
+                              textColor: textColor,
+                              fontSize: 16.0);
+                        } else {
+                          if (!emailValidator(_emailField.text)) {
+                            Fluttertoast.showToast(
+                                msg: "Ingresa un email válido",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: greyLightColor,
+                                textColor: textColor,
+                                fontSize: 16.0);
+                          } else {
+                            handler.initializeDB().whenComplete(() async {
+                              await addUser();
+                              setState(() {});
+                            });
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const usersListPage(),
+                              ),
+                            );
+                          }
+                        }
                       },
                     ),
                   ),

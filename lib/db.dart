@@ -42,16 +42,3 @@ class DatabaseHandler {
     );
   }
 }
-
-Future<List<User>> fetchUsers() async {
-  Uri dogsListAPIUrl =
-      Uri.https('jsonblob.com', '/api/880188946124021760', {'q': '{http}'});
-  final response = await http.get(dogsListAPIUrl);
-
-  if (response.statusCode == 200) {
-    List jsonResponse = json.decode(response.body);
-    return jsonResponse.map((job) => User.fromMap(job)).toList();
-  } else {
-    throw Exception('Failed to load jobs from API');
-  }
-}

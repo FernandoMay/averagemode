@@ -18,6 +18,7 @@ class _userCardState extends State<userCard> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Container(
+      color: greyLightColor,
       width: size.width,
       padding: const EdgeInsets.symmetric(
         horizontal: 4.0,
@@ -30,8 +31,8 @@ class _userCardState extends State<userCard> {
           ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
             child: SizedBox(
-              width: size.width * 0.36,
-              height: size.height / 4,
+              width: size.width * 0.4,
+              height: size.height * 0.24,
               child: Image.network(
                 widget.user!.image,
                 fit: BoxFit.cover,
@@ -39,7 +40,7 @@ class _userCardState extends State<userCard> {
             ),
           ),
           Container(
-            width: 200,
+            width: 204,
             decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(
@@ -48,7 +49,7 @@ class _userCardState extends State<userCard> {
               ),
             ),
             padding: const EdgeInsets.only(
-              bottom: 34.0,
+              bottom: 20.0,
               top: 18.0,
               left: 14.0,
               right: 8.0,
@@ -58,21 +59,49 @@ class _userCardState extends State<userCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.user!.name,
-                  style: kronosH2Black,
-                ),
-                const SizedBox(
-                  height: 14.0,
-                ),
-                Text(
-                  widget.user!.email,
+                  "lat: " + widget.user!.lat.toString(),
                   style: kronosH1Black,
                 ),
                 const SizedBox(
-                  height: 20.0,
+                  height: 2.0,
                 ),
                 Text(
-                  "Almost " + widget.user!.lat.toString() + " years",
+                  "lon: " + widget.user!.lon.toString(),
+                  style: kronosH1Black,
+                ),
+                const SizedBox(
+                  height: 12.0,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(Icons.phone, size: 12.0, color: primaryColor),
+                    SizedBox(width: 4.0),
+                    Text(
+                      widget.user!.phone.toString(),
+                      style: kronosH2Black,
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 4.0,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(Icons.email, size: 12.0, color: secondaryColor),
+                    SizedBox(width: 4.0),
+                    Text(
+                      widget.user!.email.toString(),
+                      style: kronosH2Black,
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 16.0,
+                ),
+                Text(
+                  widget.user!.name + " " + widget.user!.lastname,
                   style: kronosH4Black,
                 ),
               ],
